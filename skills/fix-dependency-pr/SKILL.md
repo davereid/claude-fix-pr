@@ -23,6 +23,7 @@ Arguments: a PR number, `all`, or nothing.
 
 - `gh`: `pr view`, `pr diff`, `pr checks`, `pr list`, `run view` (incl. `--log-failed`), `pr comment` (after approval), `api` with GET only. Nothing else.
 - `git`: `fetch`, `checkout`/`switch` of the PR branch, `status`, `diff`, `log`, `add`, `commit`, `push` (no force).
+- Drupal patches: the `drupalorg-cli` skill or `drupalorg` read commands, and `curl` GET requests to `git.drupalcode.org` and `www.drupal.org`.
 - DDEV: `ddev start`, `ddev describe`, `ddev composer`, `ddev exec`, `ddev drush` (local site), `ddev task`, and any custom `ddev <command>` the failed workflow runs. Inside a DDEV container, the same commands without the `ddev` prefix.
 
 ## Environment
@@ -49,6 +50,7 @@ Before anything else, run only these non-mutating checks. If one fails, stop and
 3. **Read the failure.** `gh pr checks`, then `gh run view <run-id> --log-failed`. Open the failed workflow's YAML to see the exact commands it ran. Read `gh pr diff`.
 4. **Classify** the cause:
    - A. A patch no longer applies. Check whether it's merged upstream (then remove it) or needs a re-roll (then find an updated patch in the upstream issue).
+     - Drupal patches (`extra.patches` in `composer.json` or a patches file): take the issue number from the patch's description or URL. If the `drupalorg-cli` skill is available, use it. Otherwise, if `drupalorg` is installed, run `drupalorg issue:show <nid> --format=llm` and `drupalorg mr:list` to check whether the fix is in the new release and get the latest MR diff or patch. Otherwise use the GitLab API on `git.drupalcode.org` (`/api/v4/projects/project%2F<project>/issues/<nid>` and `/merge_requests`). Use a patch from a fixed URL or a local file, never a moving MR `.diff` URL. If nothing applies, re-roll the patch and say so in the PR comment.
    - B. A config or schema update. Run the project's update/deploy steps (Drupal: `drush updatedb`, then `drush config:export`) and keep the resulting changes.
    - C. A test regression. Find what the update changed and fix the project code or tests.
    - D. Something else, e.g. a dependency conflict or a changed constraint.

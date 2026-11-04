@@ -33,7 +33,7 @@ You connect accounts and grant access yourself; the skill can't.
 
 **Unverified: ddev-claude container** (`marcoscano/ddev-claude`):
 
-- Allowlist your GitHub host in the add-on's firewall.
+- Allowlist your GitHub host in the add-on's firewall. For Drupal projects with patches, also allowlist `git.drupalcode.org` and `www.drupal.org`.
 - Pass a `gh` token into the container, for example as `GH_TOKEN`.
 - Make sure git can push from the container, and that commit signing works there if your repo requires it.
 
