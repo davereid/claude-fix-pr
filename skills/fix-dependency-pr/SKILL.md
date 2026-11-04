@@ -38,7 +38,7 @@ Before anything else, run only these non-mutating checks. If one fails, stop and
 
 1. `gh auth status --hostname <host>`; if not logged in: `gh auth login --hostname <host>`.
 2. `ddev --version` and `ddev describe` (host only); if not running: `ddev start`.
-3. `git status --porcelain` is empty. Otherwise ask the user to commit or stash first.
+3. `git status --porcelain --untracked-files=no` is empty (untracked files are fine). Otherwise ask the user to commit or stash their changes first.
 
 ## Steps
 
