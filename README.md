@@ -29,6 +29,8 @@ Or with Composer, which also provides the Taskfile tasks and the CI workflow tem
 composer require --dev davereid/fix-dependency-pr
 ```
 
+On Drupal sites, `drupal/core-composer-scaffold` can copy the skill into `.claude/skills/` once `davereid/fix-dependency-pr` is in `extra.drupal-scaffold.allowed-packages`.
+
 Use one or the other for the skill, not both. Full steps, including credentials and CI: [skills/fix-dependency-pr/SETUP.md](skills/fix-dependency-pr/SETUP.md).
 
 
