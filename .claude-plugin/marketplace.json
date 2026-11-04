@@ -1,0 +1,13 @@
+{
+  "name": "davereid",
+  "owner": {
+    "name": "Dave Reid"
+  },
+  "plugins": [
+    {
+      "name": "fix-dependency-pr",
+      "source": "./",
+      "description": "Diagnose and fix failing Renovate and Dependabot PRs in DDEV projects."
+    }
+  ]
+}

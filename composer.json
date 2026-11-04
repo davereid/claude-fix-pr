@@ -1,0 +1,7 @@
+{
+    "name": "davereid/fix-dependency-pr",
+    "description": "Claude Code skill, Taskfile and CI workflow that fix failing Renovate and Dependabot PRs in DDEV projects.",
+    "type": "library",
+    "license": "MIT",
+    "require": {}
+}

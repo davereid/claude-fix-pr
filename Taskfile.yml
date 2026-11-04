@@ -1,0 +1,36 @@
+version: '3'
+
+# Include from the project's root Taskfile.yml:
+#   includes:
+#     deps: ./vendor/davereid/fix-dependency-pr/Taskfile.yml
+
+tasks:
+  fix:
+    desc: Fix a failing Renovate or Dependabot PR with Claude Code (PR=<number>, optional)
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - claude "/fix-dependency-pr {{.PR}}"
+
+  install-skill:
+    desc: Symlink the skill into .claude/skills
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - mkdir -p .claude/skills
+      # shortcut: assumes Composer's default vendor/ folder; adjust the link if vendor-dir is customized.
+      - ln -sfn ../../vendor/davereid/fix-dependency-pr/skills/fix-dependency-pr .claude/skills/fix-dependency-pr
+
+  install-workflow:
+    desc: Copy the CI workflow template into .github/workflows (shows a diff if it already exists)
+    dir: '{{.ROOT_DIR}}'
+    vars:
+      SRC: '{{.TASKFILE_DIR}}/workflow/fix-dependency-pr.yml'
+      DEST: .github/workflows/fix-dependency-pr.yml
+    cmds:
+      - mkdir -p .github/workflows
+      - |
+        if [ -f "{{.DEST}}" ]; then
+          diff -u "{{.DEST}}" "{{.SRC}}" || echo "Review the diff above and update {{.DEST}} by hand."
+        else
+          cp "{{.SRC}}" "{{.DEST}}"
+          echo "Created {{.DEST}}. Edit the workflows list under workflow_run, then commit it."
+        fi
