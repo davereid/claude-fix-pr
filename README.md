@@ -11,7 +11,7 @@ The design and its decisions are in [docs/brief.md](docs/brief.md).
 
 - [Claude Code](https://claude.com/claude-code)
 - [DDEV](https://ddev.com) in the project
-- [GitHub CLI](https://cli.github.com) (`gh`), logged in to the project's GitHub host
+- [GitHub CLI](https://cli.github.com) (`gh`), logged in to the project's GitHub host. The skill uses it to read PRs and workflow logs. If you run Claude Code inside DDEV with the [ddev-claude](https://github.com/marcoscano/ddev-claude) add-on, also install the GitHub CLI add-on there: `ddev add-on get plopesc/ddev-gh-cli`
 - For CI: an `ANTHROPIC_API_KEY` secret
 
 
