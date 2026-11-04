@@ -13,7 +13,17 @@ You connect accounts and grant access yourself; the skill can't.
      deps: ./vendor/davereid/fix-dependency-pr/Taskfile.yml
    ```
 3. Install the skill into `.claude/skills/fix-dependency-pr`, using one of these:
-   - **Drupal sites with `drupal/core-composer-scaffold`:** add `"davereid/fix-dependency-pr"` to `extra.drupal-scaffold.allowed-packages` in the root `composer.json`, then run `composer install`. Scaffold copies the skill in and refreshes it on every `composer install` and `composer update`.
+   - **Drupal sites with `drupal/core-composer-scaffold`:** add `"davereid/fix-dependency-pr"` to `extra.drupal-scaffold.allowed-packages` in the root `composer.json`, then run `composer install`. Add it to the existing list if there is one:
+     ```json
+     "extra": {
+         "drupal-scaffold": {
+             "allowed-packages": [
+                 "davereid/fix-dependency-pr"
+             ]
+         }
+     }
+     ```
+     Scaffold copies the skill in and refreshes it on every `composer install` and `composer update`.
    - **Other projects:** run `task deps:install-skill`, which symlinks it.
 
    Commit `.claude/skills/fix-dependency-pr` to share it with the team, or ignore it in git.
