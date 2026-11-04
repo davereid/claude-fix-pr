@@ -40,7 +40,7 @@ In Claude Code:
 /fix-dependency-pr 123
 ```
 
-With no PR number, it lists failing bot PRs and asks which one to fix.
+`/fix-dependency-pr all` works through every failing bot PR in turn, asking before each push. With no argument, it lists failing bot PRs and asks which one to fix, or all.
 
 With Composer, include the Taskfile from the project's root `Taskfile.yml`:
 
@@ -51,7 +51,8 @@ includes:
 
 | Task | What it does |
 |---|---|
-| `task deps:fix PR=123` | Starts Claude Code with the skill for that PR |
+| `task deps:fix` | Starts Claude Code with the skill for every failing bot PR |
+| `task deps:fix PR=123` | The same, for one PR |
 | `task deps:install-skill` | Symlinks the skill into `.claude/skills/` |
 | `task deps:install-workflow` | Copies the CI workflow into `.github/workflows/`, or shows a diff if it exists |
 

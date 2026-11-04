@@ -1,19 +1,19 @@
 # fix-dependency-pr: requirements brief
 
-- **Revision** 1
-- **Brief approval** Approved (revision 1, 2026-11-04)
+- **Revision** 2
+- **Brief approval** Awaiting approval (revision 1 approved 2026-11-04; revision 2 adds `all`, which works through every failing bot PR)
 
 ## Job and scope
 
 For developers on DDEV projects that get dependency PRs from Renovate or Dependabot. The skill fixes failing bot PRs: module or package updates that need config or schema updates, dependency changes, patches that no longer apply, test regressions, or other common causes.
 
-- **Covers:** one failing Renovate or Dependabot PR per run, on any GitHub host (github.com or GitHub Enterprise), in any project that uses DDEV. No project-specific assumptions: the host, repo, commit convention and test commands all come from the project itself.
+- **Covers:** one failing Renovate or Dependabot PR per run, or every failing one in turn with `all`, on any GitHub host (github.com or GitHub Enterprise), in any project that uses DDEV. No project-specific assumptions: the host, repo, commit convention and test commands all come from the project itself.
 - **Packaging:** a Composer package, `davereid/fix-dependency-pr` (github.com, assumed public on Packagist), containing the skill, a `Taskfile.yml` and a CI workflow template.
 - **Excludes:** Pantheon or other hosting, Tugboat, email, Google Workspace, merging, and any production or remote environment.
 
 ## When it runs
 
-- **Locally (main use):** the developer asks in Claude Code, or runs `task <include>:fix PR=<number>` from the project's root Taskfile, which includes the package's Taskfile. With no PR number, it lists failing bot PRs and the developer picks one.
+- **Locally (main use):** the developer asks in Claude Code, or runs `task <include>:fix` from the project's root Taskfile, which includes the package's Taskfile. The task defaults to `all`: it works through every failing bot PR, oldest first, with each PR's own approvals and 3-attempt limit, then summarizes the results. `PR=<number>` limits it to one PR. With no argument in Claude Code, it lists failing bot PRs and the developer picks one, or all.
 - **Where it runs:** on the host (calling `ddev …`), or inside the ddev-claude container (calling `task …`/`composer …` directly). The skill detects which one.
 - **CI (comment only):** the project's workflow, copied from the template, runs on `workflow_run` when a listed workflow fails on a matching PR, and on `workflow_dispatch` with a PR number.
 - **Preconditions:**

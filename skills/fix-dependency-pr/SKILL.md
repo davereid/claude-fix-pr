@@ -1,18 +1,22 @@
 ---
 name: fix-dependency-pr
-description: Diagnose and fix a failing Renovate or Dependabot pull request in a DDEV project (patches that no longer apply, config or schema updates, dependency conflicts, test regressions), test the fix locally with the failed workflow's own commands, and push it only after the user approves. Use when asked to fix a failing Renovate/Dependabot/dependency PR, or via /fix-dependency-pr [PR number].
+description: Diagnose and fix a failing Renovate or Dependabot pull request in a DDEV project (patches that no longer apply, config or schema updates, dependency conflicts, test regressions), test the fix locally with the failed workflow's own commands, and push it only after the user approves. Use when asked to fix a failing Renovate/Dependabot/dependency PR, or via /fix-dependency-pr [PR number | all].
 ---
 
 # Fix dependency PR
 
-Fix one failing bot dependency PR per run. Arguments: an optional PR number.
+Arguments: a PR number, `all`, or nothing.
+
+- A number: fix that PR.
+- `all`: fix every open PR that has failing checks and matches the bot rules, one after another, oldest first. List them first. Then do steps 2–10 for each PR, with its own approvals and 3-attempt limit. Each PR starts from a clean checkout. After the last one, summarize each PR as fixed, given up (with the drafted comment), skipped or refused.
+- Nothing: list the matching PRs and ask which one, or `all`.
 
 ## Rules
 
 - Never merge, approve, close or edit a PR's title/body/labels; never force-push; never push to any branch except the matched PR's head branch.
 - Never touch production or remote environments: no drush site aliases other than the local site, no `sql-sync`/`rsync` from remotes, no `ddev pull`, no Terminus or hosting CLIs.
 - Ask the user before every commit + push and before every PR comment. An approval covers only that action on that PR.
-- At most 3 fix-and-retest attempts. One PR per run unless the user asks for more. Don't wait for CI after pushing.
+- At most 3 fix-and-retest attempts. One PR per run unless the user asks for more (`all` or a list). The user can skip a PR, or stop the whole run, at any approval prompt. Don't wait for CI after pushing.
 - When unsure, stop and ask.
 
 ## Allowed tools

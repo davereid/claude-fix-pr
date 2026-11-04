@@ -15,7 +15,7 @@ You connect accounts and grant access yourself; the skill can't.
 3. `task deps:install-skill`. Commit the symlink `.claude/skills/fix-dependency-pr` to share it with the team, or ignore it in git.
 4. GitHub: create a fine-grained token for this repository only, with Contents: read/write, Pull requests: read/write and Actions: read. Then run `gh auth login --hostname <your GitHub host>`.
 5. Check that `git push` to the repo works with your SSH key (and signing, if required).
-6. Run it with `task deps:fix PR=123`, or `/fix-dependency-pr 123` in Claude Code.
+6. Run it with `task deps:fix` (every failing bot PR) or `task deps:fix PR=123`. In Claude Code, use `/fix-dependency-pr all` or `/fix-dependency-pr 123`.
 
 **Unverified: ddev-claude container** (`marcoscano/ddev-claude`):
 

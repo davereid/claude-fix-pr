@@ -6,10 +6,10 @@ version: '3'
 
 tasks:
   fix:
-    desc: Fix a failing Renovate or Dependabot PR with Claude Code (PR=<number>, optional)
+    desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
     dir: '{{.ROOT_DIR}}'
     cmds:
-      - claude "/fix-dependency-pr {{.PR}}"
+      - claude "/fix-dependency-pr {{.PR | default "all"}}"
 
   install-skill:
     desc: Symlink the skill into .claude/skills
