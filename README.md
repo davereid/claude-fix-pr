@@ -6,6 +6,12 @@ An optional GitHub workflow runs the same diagnosis in CI and posts the proposed
 
 The design and its decisions are in [docs/brief.md](docs/brief.md).
 
+The brief for this skill was written during a workshop at the 2026 Lullabot Retreat by the following team:
+- @davereid
+- @HammerHankinson
+- @mtift
+- @quicksketch
+
 
 ## Requirements
 
@@ -73,3 +79,8 @@ includes:
 - It asks before every commit, push and PR comment.
 - It makes at most 3 fix attempts per PR, then stops and drafts a comment.
 - It never merges, force-pushes, pushes to other branches, or touches production or remote environments.
+
+
+## AI disclosure
+
+This project was built with Claude Code (Anthropic). Claude Code drafted the skill, the Taskfile, the CI workflow and this documentation from a brief written by the team and uploaded by me. I directed the implementation and design decisions, reviewed the output, and directed updates afterwards from the brief.
