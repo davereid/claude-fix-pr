@@ -5,9 +5,9 @@
   },
   "plugins": [
     {
-      "name": "fix-dependency-pr",
+      "name": "fix-pr",
       "source": "./",
-      "description": "Diagnose and fix failing Renovate and Dependabot PRs in DDEV projects."
+      "description": "Diagnose and fix failing bot PRs (Renovate, Dependabot) and your own failing PRs in DDEV projects."
     }
   ]
 }

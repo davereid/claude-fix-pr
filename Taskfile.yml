@@ -2,19 +2,19 @@ version: '3'
 
 # Include from the project's root Taskfile.yml:
 #   includes:
-#     deps: ./vendor/davereid/fix-dependency-pr/Taskfile.yml
+#     pr: ./vendor/davereid/claude-fix-pr/Taskfile.yml
 
 tasks:
-  desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
   default:
+    desc: Fix failing bot PRs and your own failing PRs with Claude Code (all of them, or PR=<number>)
     cmds:
       - task: fix
 
   fix:
-    desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
+    desc: Fix failing bot PRs and your own failing PRs with Claude Code (all of them, or PR=<number>)
     dir: '{{.ROOT_DIR}}'
     cmds:
-      - claude "/fix-dependency-pr {{.PR | default "all"}}"
+      - claude "/fix-pr {{.PR | default "all"}}"
 
   install-skill:
     desc: Symlink the skill into .claude/skills
@@ -22,14 +22,14 @@ tasks:
     cmds:
       - mkdir -p .claude/skills
       # shortcut: assumes Composer's default vendor/ folder; adjust the link if vendor-dir is customized.
-      - ln -sfn ../../vendor/davereid/fix-dependency-pr/skills/fix-dependency-pr .claude/skills/fix-dependency-pr
+      - ln -sfn ../../vendor/davereid/claude-fix-pr/skills/fix-pr .claude/skills/fix-pr
 
   install-workflow:
     desc: Copy the CI workflow template into .github/workflows (shows a diff if it already exists)
     dir: '{{.ROOT_DIR}}'
     vars:
-      SRC: '{{.TASKFILE_DIR}}/workflow/fix-dependency-pr.yml'
-      DEST: .github/workflows/fix-dependency-pr.yml
+      SRC: '{{.TASKFILE_DIR}}/workflow/fix-pr.yml'
+      DEST: .github/workflows/fix-pr.yml
     cmds:
       - mkdir -p .github/workflows
       - |

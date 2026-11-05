@@ -1,14 +1,14 @@
 {
-    "name": "davereid/fix-dependency-pr",
-    "description": "Claude Code skill, Taskfile and CI workflow that fix failing Renovate and Dependabot PRs in DDEV projects.",
+    "name": "davereid/claude-fix-pr",
+    "description": "Claude Code skill, Taskfile and CI workflow that fix failing bot PRs (Renovate, Dependabot) and your own failing PRs in DDEV projects.",
     "type": "library",
     "license": "MIT",
     "require": {},
     "extra": {
         "drupal-scaffold": {
             "file-mapping": {
-                "[project-root]/.claude/skills/fix-dependency-pr/SKILL.md": "skills/fix-dependency-pr/SKILL.md",
-                "[project-root]/.claude/skills/fix-dependency-pr/SETUP.md": "skills/fix-dependency-pr/SETUP.md"
+                "[project-root]/.claude/skills/fix-pr/SKILL.md": "skills/fix-pr/SKILL.md",
+                "[project-root]/.claude/skills/fix-pr/SETUP.md": "skills/fix-pr/SETUP.md"
             }
         }
     }

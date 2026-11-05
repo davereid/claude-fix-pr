@@ -1,10 +1,14 @@
-name: Fix dependency PR
+name: Fix PR
 
+# Runs on a failing Dependabot PR, on a manual run for any same-repository PR,
+# or when the `fix-my-pr` label is added to one. To run again, remove the label and add it again.
 on:
   workflow_run:
     # Edit: the workflows whose failures should be diagnosed.
     workflows: [CI]
     types: [completed]
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       pr:
@@ -17,18 +21,20 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: fix-dependency-pr-${{ github.event.workflow_run.head_branch || inputs.pr }}
+  group: fix-pr-${{ github.event.workflow_run.head_branch || inputs.pr || github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   diagnose:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'failure'
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure')
+      || (github.event_name == 'pull_request' && github.event.label.name == 'fix-my-pr')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       GH_TOKEN: ${{ github.token }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      RENOVATE_BOT: ${{ vars.FIX_DEPENDENCY_PR_RENOVATE_BOT || 'renovate[bot]' }}
     steps:
       - name: Check API key
         id: key
@@ -40,28 +46,31 @@ jobs:
             echo "ok=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Find the PR and check the bot rules
+      - name: Find the PR and check that it is eligible
         id: pr
         if: steps.key.outputs.ok == 'true'
         env:
           INPUT_PR: ${{ inputs.pr }}
+          LABEL_PR: ${{ github.event.pull_request.number }}
           RUN_PR: ${{ github.event.workflow_run.pull_requests[0].number }}
         run: |
-          pr="${INPUT_PR:-$RUN_PR}"
+          pr="${INPUT_PR:-${LABEL_PR:-$RUN_PR}}"
           if [ -z "$pr" ]; then echo "::notice::No PR for this run."; echo "match=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          read -r branch author < <(gh pr view "$pr" -R "$GITHUB_REPOSITORY" --json headRefName,author -q '"\(.headRefName) \(.author.login)"')
-          # gh may report bots as "app/renovate" or "renovate[bot]"; normalize to the bare name.
+          read -r branch author cross < <(gh pr view "$pr" -R "$GITHUB_REPOSITORY" --json headRefName,author,isCrossRepository -q '"\(.headRefName) \(.author.login) \(.isCrossRepository)"')
+          # gh may report bots as "app/dependabot" or "dependabot[bot]"; normalize to the bare name.
           author="${author#app/}"; author="${author%\[bot\]}"
-          prefix=$(gh api "repos/$GITHUB_REPOSITORY/contents/renovate.json" -q '.content' 2>/dev/null | base64 -d 2>/dev/null | jq -r '.branchPrefix // empty' 2>/dev/null)
           match=false
-          case "$branch" in
-            dependabot/*) [ "$author" = dependabot ] && match=true ;;
-            renovate/*|"${prefix:-renovate/}"*) [ "$author" = "${RENOVATE_BOT%\[bot\]}" ] && match=true ;;
-          esac
+          if [ "$GITHUB_EVENT_NAME" = workflow_run ]; then
+            # Automatic runs: Dependabot PRs only.
+            [[ "$branch" == dependabot/* ]] && [ "$author" = dependabot ] && [ "$cross" = false ] && match=true
+          else
+            # A person asked for it (manual run or label): any PR whose branch is in this repository.
+            [ "$cross" = false ] && match=true
+          fi
           echo "number=$pr" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
           echo "match=$match" >> "$GITHUB_OUTPUT"
-          [ "$match" = true ] || echo "::notice::PR #$pr ($branch by $author) is not a Renovate/Dependabot PR; skipping."
+          [ "$match" = true ] || echo "::notice::PR #$pr ($branch by $author) is not eligible for this trigger; skipping."
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.pr.outputs.match == 'true'
@@ -80,15 +89,15 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
           prompt: |
-            /fix-dependency-pr ${{ steps.pr.outputs.number }}
-            You are running in CI (comment-only mode): never commit, push or comment. Write the report to fix-dependency-pr-comment.md.
+            /fix-pr ${{ steps.pr.outputs.number }}
+            You are running in CI (comment-only mode): never commit, push or comment. Write the report to fix-pr-comment.md.
           claude_args: >-
             --max-turns 60
             --allowedTools "Read,Grep,Glob,Edit,Write,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh run view:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(ddev:*)"
 
       - uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
-        if: steps.pr.outputs.match == 'true' && hashFiles('fix-dependency-pr-comment.md') != ''
+        if: steps.pr.outputs.match == 'true' && hashFiles('fix-pr-comment.md') != ''
         with:
-          header: fix-dependency-pr
+          header: fix-pr
           number: ${{ steps.pr.outputs.number }}
-          path: fix-dependency-pr-comment.md
+          path: fix-pr-comment.md

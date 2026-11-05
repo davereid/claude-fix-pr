@@ -1,11 +1,11 @@
-# fix-dependency-pr
+# fix-pr
 
-[![Packagist Version](https://img.shields.io/packagist/v/davereid/fix-dependency-pr)](https://packagist.org/packages/davereid/fix-dependency-pr)
-[![skills.sh](https://img.shields.io/badge/skills.sh-fix--dependency--pr-black)](https://skills.sh/davereid/fix-dependency-pr)
+[![Packagist Version](https://img.shields.io/packagist/v/davereid/claude-fix-pr)](https://packagist.org/packages/davereid/claude-fix-pr)
+[![skills.sh](https://img.shields.io/badge/skills.sh-fix--pr-black)](https://skills.sh/davereid/claude-fix-pr)
 
-A Claude Code skill that diagnoses and fixes failing Renovate and Dependabot pull requests in DDEV projects. It reads the failed workflow's logs, classifies the cause (a patch that no longer applies, a config or schema update, a test regression, or something else), tests a fix locally with the failed job's own commands, and commits and pushes only after you approve.
+A Claude Code skill that diagnoses and fixes failing pull requests in DDEV projects: ones opened by bots such as Renovate and Dependabot, and your own. It reads the failed workflow's logs, classifies the cause (a patch that no longer applies, a config or schema update, a test regression, or something else), tests a fix locally with the failed job's own commands, and commits and pushes only after you approve.
 
-An optional GitHub workflow runs the same diagnosis in CI and posts the proposed fix as a PR comment. It never pushes.
+An optional GitHub workflow runs the same diagnosis in CI and posts the proposed fix as a PR comment. It never pushes. It runs automatically on failing Dependabot PRs, and on any PR in the repository when you run it manually or add the `fix-my-pr` label.
 
 The design and its decisions are in [docs/brief.md](docs/brief.md).
 
@@ -29,26 +29,26 @@ The brief for this skill was written during a workshop at the 2026 Lullabot Retr
 As a Claude Code plugin:
 
 ```
-/plugin install fix-dependency-pr --marketplace davereid/fix-dependency-pr
+/plugin install fix-pr --marketplace davereid/claude-fix-pr
 ```
 
 Or with [`npx skills`](https://github.com/vercel-labs/skills), which installs just the skill:
 
 ```
-npx skills add https://github.com/davereid/fix-dependency-pr
+npx skills add https://github.com/davereid/claude-fix-pr
 ```
 
-Choose Claude Code when it asks which agents to install for. It installs the skill into `.claude/skills/fix-dependency-pr/` in the project, or `~/.claude/skills/` with `-g`. Update it later with `npx skills update`.
+Choose Claude Code when it asks which agents to install for. It installs the skill into `.claude/skills/fix-pr/` in the project, or `~/.claude/skills/` with `-g`. Update it later with `npx skills update`.
 
 Or with Composer, which also provides the Taskfile tasks and the CI workflow template:
 
 ```
-composer require --dev davereid/fix-dependency-pr
+composer require --dev davereid/claude-fix-pr
 ```
 
-On Drupal sites, `drupal/core-composer-scaffold` can copy the skill into `.claude/skills/` once `davereid/fix-dependency-pr` is in `extra.drupal-scaffold.allowed-packages`.
+On Drupal sites, `drupal/core-composer-scaffold` can copy the skill into `.claude/skills/` once `davereid/claude-fix-pr` is in `extra.drupal-scaffold.allowed-packages`.
 
-Use one or the other for the skill, not both. Full steps, including credentials and CI: [skills/fix-dependency-pr/SETUP.md](skills/fix-dependency-pr/SETUP.md).
+Use one or the other for the skill, not both. Full steps, including credentials and CI: [skills/fix-pr/SETUP.md](skills/fix-pr/SETUP.md).
 
 
 ## Usage
@@ -56,29 +56,29 @@ Use one or the other for the skill, not both. Full steps, including credentials 
 In Claude Code:
 
 ```
-/fix-dependency-pr 123
+/fix-pr 123
 ```
 
-`/fix-dependency-pr all` works through every failing bot PR in turn, asking before each push. With no argument, it lists failing bot PRs and asks which one to fix, or all.
+`/fix-pr all` works through every failing bot PR and PR of your own in turn, asking before each push. With no argument, it lists them and asks which one to fix, or all.
 
 With Composer, include the Taskfile from the project's root `Taskfile.yml`:
 
 ```yaml
 includes:
-  deps: ./vendor/davereid/fix-dependency-pr/Taskfile.yml
+  pr: ./vendor/davereid/claude-fix-pr/Taskfile.yml
 ```
 
 | Task | What it does |
 |---|---|
-| `task deps:fix` | Starts Claude Code with the skill for every failing bot PR |
-| `task deps:fix PR=123` | The same, for one PR |
-| `task deps:install-skill` | Symlinks the skill into `.claude/skills/` |
-| `task deps:install-workflow` | Copies the CI workflow into `.github/workflows/`, or shows a diff if it exists |
+| `task pr:fix` | Starts Claude Code with the skill for every failing bot PR and PR of your own |
+| `task pr:fix PR=123` | The same, for one PR |
+| `task pr:install-skill` | Symlinks the skill into `.claude/skills/` |
+| `task pr:install-workflow` | Copies the CI workflow into `.github/workflows/`, or shows a diff if it exists |
 
 
 ## What it will and won't do
 
-- It only works on PRs whose branch **and** author match Renovate or Dependabot.
+- It only works on PRs opened by a bot or by you, whose branch is in the same repository. It refuses anyone else's PR and PRs from forks.
 - It asks before every commit, push and PR comment.
 - It makes at most 3 fix attempts per PR, then stops and drafts a comment.
 - It never merges, force-pushes, pushes to other branches, or touches production or remote environments.
