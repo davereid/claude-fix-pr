@@ -5,6 +5,11 @@ version: '3'
 #     deps: ./vendor/davereid/fix-dependency-pr/Taskfile.yml
 
 tasks:
+  desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
+  default:
+    cmds:
+      - fix
+
   fix:
     desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
     dir: '{{.ROOT_DIR}}'
