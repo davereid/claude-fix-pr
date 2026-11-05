@@ -8,7 +8,7 @@ tasks:
   desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
   default:
     cmds:
-      - fix
+      - task: fix
 
   fix:
     desc: Fix failing Renovate and Dependabot PRs with Claude Code (all of them, or PR=<number>)
