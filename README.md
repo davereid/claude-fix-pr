@@ -23,6 +23,14 @@ As a Claude Code plugin:
 /plugin install fix-dependency-pr --marketplace davereid/fix-dependency-pr
 ```
 
+Or with [`npx skills`](https://github.com/vercel-labs/skills), which installs just the skill:
+
+```
+npx skills add https://github.com/davereid/fix-dependency-pr
+```
+
+Choose Claude Code when it asks which agents to install for. It installs the skill into `.claude/skills/fix-dependency-pr/` in the project, or `~/.claude/skills/` with `-g`. Update it later with `npx skills update`.
+
 Or with Composer, which also provides the Taskfile tasks and the CI workflow template:
 
 ```
