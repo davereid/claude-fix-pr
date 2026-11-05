@@ -10,10 +10,10 @@ An optional GitHub workflow runs the same diagnosis in CI and posts the proposed
 The design and its decisions are in [docs/brief.md](docs/brief.md).
 
 The brief for this skill was written during a workshop at the 2026 Lullabot Retreat by the following team:
-- @davereid
-- @HammerHankinson
-- @mtift
-- @quicksketch
+- [@davereid](https://github.com/davereid)
+- [@HammerHankinson](https://github.com/HammerHankinson)
+- [@mtift](https://github.com/mtift)
+- [@quicksketch](https://github.com/quicksketch)
 
 
 ## Requirements
