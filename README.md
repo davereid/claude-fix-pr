@@ -1,5 +1,8 @@
 # fix-dependency-pr
 
+[![Packagist Version](https://img.shields.io/packagist/v/davereid/fix-dependency-pr)](https://packagist.org/packages/davereid/fix-dependency-pr)
+[![skills.sh](https://img.shields.io/badge/skills.sh-fix--dependency--pr-black)](https://skills.sh/davereid/fix-dependency-pr)
+
 A Claude Code skill that diagnoses and fixes failing Renovate and Dependabot pull requests in DDEV projects. It reads the failed workflow's logs, classifies the cause (a patch that no longer applies, a config or schema update, a test regression, or something else), tests a fix locally with the failed job's own commands, and commits and pushes only after you approve.
 
 An optional GitHub workflow runs the same diagnosis in CI and posts the proposed fix as a PR comment. It never pushes.
